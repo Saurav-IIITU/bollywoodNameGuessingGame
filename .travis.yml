@@ -1,0 +1,17 @@
+language: python
+python:
+  - "3.9"
+
+services:
+  - docker
+
+before_install:
+  - docker build -t flask-app .
+
+script:
+  - docker run -d -p 5000:5000 flask-app
+  - sleep 3  # Give the Flask app some time to start
+  - docker ps | grep -q flask-app
+
+after_success:
+  # If you have any additional steps to perform after successful build, you can add them here
