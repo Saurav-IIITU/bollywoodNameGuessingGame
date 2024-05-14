@@ -61,10 +61,14 @@
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
+
+        .replay-btn {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <h1>Guess the Movie Name</h1>
+    <h1>Guess the Bollywood Movie Name</h1>
     <p>Current Progress: {{ partial_name }}</p>
     <p>Chances Left: {{ chances }}</p>
     <form action="/guess" method="POST">
@@ -76,7 +80,10 @@
         <input type="submit" value="Guess">
     </form>
     {% if result %}
-    <p>{{ result }}</p>
+        <p>{{ result }}</p>
+        <form action="/play" method="POST" class="replay-btn">
+            <input type="submit" value="Play Again">
+        </form>
     {% endif %}
 </body>
 </html>

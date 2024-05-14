@@ -10,8 +10,18 @@ before_install:
 
 script:
   - docker run -d -p 5000:5000 flask-app
-  - sleep 3  # Give the Flask app some time to start
+  - sleep 3
   - docker ps | grep -q flask-app
 
 after_success:
-  # If you have any additional steps to perform after successful build, you can add them here
+  deploy:
+    provider: elasticbeanstalk
+    region: "your-aws-region"  # Replace with your AWS region, e.g., us-east-1
+    app: "your-elastic-beanstalk-app-name"  # Replace with your Elastic Beanstalk application name
+    env: "your-environment-name"  # Replace with your Elastic Beanstalk environment name
+    bucket_name: "your-s3-bucket-name"  # Replace with your S3 bucket name
+    bucket_path: "your-s3-bucket-path"  # Replace with your S3 bucket path (optional)
+    on:
+      branch: main
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
