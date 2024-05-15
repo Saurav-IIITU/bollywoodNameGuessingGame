@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, redirect, url_for
 from game import choose_random_name, display_partial_name
 import pandas as pd
 
@@ -15,20 +15,25 @@ def index():
 
 @app.route('/play', methods=['POST'])
 def play():
+    session.clear()  # Clear session data for a new game
+    session['name_to_guess'] = choose_random_name()
+    session['guessed_consonants'] = []
+    session['chances'] = 8
+    return redirect(url_for('game'))
+
+@app.route('/game')
+def game():
     if 'name_to_guess' not in session:  # Check if name_to_guess is not in session
-        session['name_to_guess'] = choose_random_name()
-        session['guessed_consonants'] = []
-        session['chances'] = 8
+        return redirect(url_for('index'))
 
     return render_template('play.html', name=session['name_to_guess'], partial_name=display_partial_name(session['name_to_guess'], session['guessed_consonants']), chances=session['chances'])
 
 @app.route('/guess', methods=['POST'])
 def guess():
-    user_guess = request.form['guess'].lower()
-    
     if 'name_to_guess' not in session:
-        return render_template('index.html')  # Redirect to index if session data is not initialized
+        return redirect(url_for('index'))  # Redirect to index if session data is not initialized
 
+    user_guess = request.form['guess'].lower()
     name_to_guess = session['name_to_guess']
     guessed_consonants = session['guessed_consonants']
     chances = session['chances']
@@ -45,6 +50,9 @@ def guess():
             result = None
     else:
         result = "Invalid guess. Please enter a single consonant that you haven't guessed before."
+
+    if len(user_guess) == 1 and user_guess in name_to_guess.lower():
+        session['chances'] += 1  # Reward: gain one chance on correct guess
 
     session['chances'] -= 1
 
