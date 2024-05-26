@@ -62,4 +62,4 @@ def guess():
     return render_template('play.html', name=name_to_guess, partial_name=partial_name_display, chances=session['chances'], result=result)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000,debug=True)
