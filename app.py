@@ -54,7 +54,7 @@ def guess():
     if len(user_guess) == 1 and user_guess in name_to_guess.lower():
         session['chances'] += 1  # Reward: gain one chance on correct guess
 
-    session['chances'] -= 1
+    session['chances']  -= 1
 
     if session['chances'] == 0 and result is None:
         result = "Sorry, you've run out of chances. The correct name was: " + name_to_guess

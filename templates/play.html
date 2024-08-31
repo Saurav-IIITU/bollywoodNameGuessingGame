@@ -28,6 +28,32 @@
             color: #555;
         }
 
+        .movie-name {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .word-box {
+            display: flex;
+            border: 2px solid #333;
+            margin-right: 10px;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        .letter-box {
+            width: 30px;
+            height: 40px;
+            margin: 0 2px;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background-color: #fff;
+        }
+
         form {
             display: flex;
             flex-direction: column;
@@ -59,7 +85,7 @@
         }
 
         input[type="submit"]:hover {
-            background-color: #0056b3;
+       2      background-color: #0056b3;
         }
 
         .replay-btn {
@@ -69,14 +95,23 @@
 </head>
 <body>
     <h1>Guess the Bollywood Movie Name</h1>
-    <p>Current Progress: {{ partial_name }}</p>
+    <div class="movie-name">
+        {% for word in partial_name.split(' ') %}
+      
+        <div class="word-box">
+                {% for char in word %}
+                    <div class="letter-box">{{ char }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
     <p>Chances Left: {{ chances }}</p>
     <form action="/guess" method="POST">
         <input type="hidden" name="name" value="{{ name }}">
         <input type="hidden" name="chances" value="{{ chances }}">
         <input type="hidden" name="guessed_consonants" value="{{ guessed_consonants }}">
         <label for="guess">Enter a consonant:</label>
-        <input type="text" id="guess" name="guess" maxlength="1" required pattern="[bcdfghjklmnpqrstvwxyz]">
+        <input type="text" id="guess" name="guess" maxlength="1" required pattern="[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]">
         <input type="submit" value="Guess">
     </form>
     {% if result %}
