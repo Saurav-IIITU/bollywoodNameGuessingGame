@@ -37,29 +37,43 @@ def guess():
     name_to_guess = session['name_to_guess']
     guessed_consonants = session['guessed_consonants']
     chances = session['chances']
-    partial_name_display = ""
+    partial_name_display = display_partial_name(name_to_guess, guessed_consonants)
 
-    if len(user_guess) == 1 and user_guess.isalpha() and user_guess not in "aeiou" and user_guess not in guessed_consonants:
-        guessed_consonants.append(user_guess)
-        session['guessed_consonants'] = guessed_consonants
-        partial_name_display = display_partial_name(name_to_guess, guessed_consonants)
+    warning = None
+    result = None
 
-        if "_" not in partial_name_display:
-            result = "Congratulations! You've guessed the name: " + name_to_guess
+    # Check if it's a valid consonant guess
+    if len(user_guess) == 1 and user_guess.isalpha() and user_guess not in "aeiou":
+        if user_guess in guessed_consonants:
+            # Warn about repeated guess
+            warning = f"You've already guessed '{user_guess}'. Try a different consonant."
         else:
-            result = None
+            # Add guess to guessed consonants
+            guessed_consonants.append(user_guess)
+            session['guessed_consonants'] = guessed_consonants
+            partial_name_display = display_partial_name(name_to_guess, guessed_consonants)
+
+            # Check if the entire name is guessed
+            if "_" not in partial_name_display:
+                result = f"Congratulations! You've guessed the name: {name_to_guess}"
+            else:
+                result = None
+
+            # Reward correct guess by adding a chance
+            if user_guess in name_to_guess.lower():
+                session['chances'] += 1
+
     else:
-        result = "Invalid guess. Please enter a single consonant that you haven't guessed before."
+        warning = "Invalid guess. Please enter a single consonant that you haven't guessed before."
 
-    if len(user_guess) == 1 and user_guess in name_to_guess.lower():
-        session['chances'] += 1  # Reward: gain one chance on correct guess
+    # Deduct a chance for every valid guess
+    session['chances'] -= 1
 
-    session['chances']  -= 1
-
+    # Check if the game is over due to chances running out
     if session['chances'] == 0 and result is None:
-        result = "Sorry, you've run out of chances. The correct name was: " + name_to_guess
+        result = f"Sorry, you've run out of chances. The correct name was: {name_to_guess}"
 
-    return render_template('play.html', name=name_to_guess, partial_name=partial_name_display, chances=session['chances'], result=result)
+    return render_template('play.html', name=name_to_guess, partial_name=partial_name_display, chances=session['chances'], result=result, warning=warning)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000,debug=True)

@@ -12,9 +12,15 @@
             padding: 0;
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
         }
 
         h1 {
@@ -85,40 +91,81 @@
         }
 
         input[type="submit"]:hover {
-       2      background-color: #0056b3;
+            background-color: #0056b3;
         }
 
         .replay-btn {
             margin-top: 20px;
         }
+
+        footer {
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <h1>Guess the Bollywood Movie Name</h1>
-    <div class="movie-name">
-        {% for word in partial_name.split(' ') %}
-      
-        <div class="word-box">
-                {% for char in word %}
-                    <div class="letter-box">{{ char }}</div>
-                {% endfor %}
-            </div>
-        {% endfor %}
-    </div>
-    <p>Chances Left: {{ chances }}</p>
-    <form action="/guess" method="POST">
-        <input type="hidden" name="name" value="{{ name }}">
-        <input type="hidden" name="chances" value="{{ chances }}">
-        <input type="hidden" name="guessed_consonants" value="{{ guessed_consonants }}">
-        <label for="guess">Enter a consonant:</label>
-        <input type="text" id="guess" name="guess" maxlength="1" required pattern="[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]">
-        <input type="submit" value="Guess">
-    </form>
-    {% if result %}
-        <p>{{ result }}</p>
-        <form action="/play" method="POST" class="replay-btn">
-            <input type="submit" value="Play Again">
-        </form>
-    {% endif %}
+    <main>
+        <h1>Guess the Bollywood Movie Name</h1>
+        
+        <!-- Display the partially guessed movie name -->
+        <div class="movie-name">
+            {% for word in partial_name.split(' ') %}
+                <div class="word-box">
+                    {% for char in word %}
+                        <div class="letter-box">{{ char }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Display the number of chances left -->
+        <p>Chances Left: {{ chances }}</p>
+
+        <!-- Show warning if there is a repeated guess or an invalid guess -->
+        {% if warning %}
+            <p style="color: orange;">{{ warning }}</p>
+        {% endif %}
+
+        <!-- If the game is still in progress and no result yet -->
+        {% if chances > 0 and not result %}
+            <form action="/guess" method="POST">
+                <input type="hidden" name="name" value="{{ name }}">
+                <input type="hidden" name="chances" value="{{ chances }}">
+                <input type="hidden" name="guessed_consonants" value="{{ guessed_consonants }}">
+                
+                <label for="guess">Enter a consonant:</label>
+                <input type="text" id="guess" name="guess" maxlength="1" required pattern="[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]">
+                <input type="submit" value="Guess">
+            </form>
+        {% endif %}
+
+        <!-- If the game is over, show the result and offer to replay -->
+        {% if result %}
+            <p>{{ result }}</p>
+            <form action="/play" method="POST" class="replay-btn">
+                <input type="submit" value="Play Again">
+            </form>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>Check out the code on <a href="https://github.com/Saurav-IIITU/bollywoodNameGuessingGame" target="_blank">GitHub</a></p>
+    </footer>
 </body>
 </html>
