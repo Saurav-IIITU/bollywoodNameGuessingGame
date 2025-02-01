@@ -43,7 +43,7 @@
 
         .movie-name {
             display: flex;
-            flex-wrap: wrap; /* Allow words to wrap on small screens */
+            flex-wrap: wrap;
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
@@ -54,7 +54,7 @@
             border: 2px solid #333;
             padding: 8px;
             background-color: #fff;
-            flex-wrap: wrap; /* Wrap letters if needed */
+            flex-wrap: wrap;
         }
 
         .letter-box {
@@ -69,67 +69,37 @@
             background-color: #fff;
         }
 
-        form {
+        .keyboard {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 400px; /* Limit form width on large screens */
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 15px;
         }
 
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            font-size: 1rem;
-            margin-bottom: 10px;
+        .key {
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            font-size: 1.2rem;
+            text-align: center;
+            line-height: 40px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        input[type="submit"] {
-            width: 100%;
-            max-width: 200px;
-        }
-
-        /* Mobile-first media queries */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            .letter-box {
-                width: 24px;
-                height: 34px;
-                font-size: 1rem;
-            }
-
-            input[type="text"] {
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .word-box {
-                padding: 5px;
-            }
-
-            .letter-box {
-                width: 20px;
-                height: 30px;
-                margin: 0 1px;
-            }
-
-            input[type="submit"] {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
+        .key:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
         }
     </style>
-<!--     <script type='text/javascript' src='//denialtransportationfair.com/b4/f2/ed/b4f2ed3cc90c75ed3ec4461fa21c45e0.js'></script> -->
 </head>
 <body>
     <main class="container-fluid">
         <h1>Guess the Bollywood Movie Name</h1>
         
-        <!-- Movie name display -->
         <div class="movie-name">
             {% for word in partial_name.split(' ') %}
                 <div class="word-box">
@@ -140,24 +110,25 @@
             {% endfor %}
         </div>
 
-        <!-- Game status -->
         <p>Chances Left: {{ chances }}</p>
 
         {% if warning %}
             <p class="text-warning">{{ warning }}</p>
         {% endif %}
 
-        <!-- Forms -->
         {% if chances > 0 and not result %}
-            <form action="/guess" method="POST">
+            <form action="/guess" method="POST" id="guess-form">
                 <input type="hidden" name="name" value="{{ name }}">
                 <input type="hidden" name="chances" value="{{ chances }}">
                 <input type="hidden" name="guessed_consonants" value="{{ guessed_consonants }}">
+                <input type="hidden" id="guess" name="guess">
                 
-                <label for="guess">Enter a consonant:</label>
-                <input type="text" id="guess" name="guess" maxlength="1" required 
-                       pattern="[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]"
-                       class="form-control">
+                <div class="keyboard">
+                    {% for letter in "BCDFGHJKLMNPQRSTVWXYZ" %}
+                        <button type="button" class="key" onclick="selectLetter('{{ letter }}')">{{ letter }}</button>
+                    {% endfor %}
+                </div>
+                
                 <input type="submit" value="Guess" class="btn btn-primary mt-2">
             </form>
         {% endif %}
@@ -170,11 +141,11 @@
         {% endif %}
     </main>
 
-    <!-- Scripts -->
-    <script type="text/javascript">
-        atOptions = { 'key' : '1762690f0d588faaf15678e72cace4c9', 'format' : 'iframe', 'height' : 60, 'width' : 468 };
+    <script>
+        function selectLetter(letter) {
+            document.getElementById('guess').value = letter;
+            document.getElementById('guess-form').submit();
+        }
     </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/1762690f0d588faaf15678e72cace4c9/invoke.js"></script>
-    <script type='text/javascript' src='//denialtransportationfair.com/23/08/f6/2308f63570dc56a0eaffe9e13c85f4ee.js'></script>
 </body>
 </html>
