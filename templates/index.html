@@ -4,62 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Guessing Game</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6836208313698263"
-     crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6836208313698263" crossorigin="anonymous"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #1E3A8A; /* Changed background color */
+            font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+            background: linear-gradient(135deg, #1E3A8A, #0D1B2A);
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             text-align: center;
-            flex-direction: column; /* Centered the text and button */
+            flex-direction: column;
+            color: white;
         }
 
         h1 {
-            color: #333;
-            margin-bottom: 20px;
-            animation: fadeIn 1.5s ease-in-out; /* Added fade-in animation */
+            color: #FFD700;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .difficulty-container {
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .difficulty-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background-color: #3B82F6;
+            color: white;
+        }
+
+        .difficulty-btn[data-difficulty="easy"] { background-color: #10B981; }
+        .difficulty-btn[data-difficulty="medium"] { background-color: #F59E0B; }
+        .difficulty-btn[data-difficulty="hard"] { background-color: #EF4444; }
+
+        .difficulty-btn.selected {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255,215,0,0.5);
         }
 
         .start-button {
-            background-color: #007bff;
-            color: #fff;
+            background-color: #4C1D95;
+            color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 18px;
+            padding: 15px 40px;
+            font-size: 1.2em;
             cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s, transform 0.3s;
-            animation: buttonAnimation 2s ease-in-out; /* Added button animation */
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
 
         .start-button:hover {
-            background-color: #0056b3;
-            transform: scale(1.1); /* Slight scale effect on hover */
+            background-color: #6D28D9;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(76,29,149,0.4);
         }
 
-        /* Fade-in animation for the heading */
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Animation for the button */
-        @keyframes buttonAnimation {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .hidden {
+            display: none;
+        }
+
+        .difficulty-instruction {
+            margin-bottom: 15px;
+            color: #CBD5E1;
+            font-size: 1.1em;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to the Movies Guessing Game!</h1>
+    <h1>🎬 Movie Guessing Game 🍿</h1>
+    <p class="difficulty-instruction">Select your difficulty level:</p>
+    
     <form action="/play" method="POST">
-        <button class="start-button" type="submit">Start</button>
+        <div class="difficulty-container">
+            <button type="button" class="difficulty-btn selected" data-difficulty="easy" onclick="selectDifficulty(this)">Easy</button>
+            <button type="button" class="difficulty-btn selected" data-difficulty="medium" onclick="selectDifficulty(this)">Medium</button>
+            <button type="button" class="difficulty-btn" data-difficulty="hard" onclick="selectDifficulty(this)">Hard</button>
+        </div>
+        <input type="hidden" id="difficulty" name="difficulty" value="medium">
+        
+        <button class="start-button" type="submit">
+            Start Game 🎮
+        </button>
     </form>
+
+    <script>
+        function selectDifficulty(btn) {
+            // Remove selected class from all buttons
+            document.querySelectorAll('.difficulty-btn').forEach(button => {
+                button.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked button
+            btn.classList.add('selected');
+            
+            // Update hidden input value
+            document.getElementById('difficulty').value = btn.dataset.difficulty;
+        }
+
+        // Set medium as default selected
+        window.onload = function() {
+            document.querySelector('[data-difficulty="medium"]').classList.add('selected');
+        }
+    </script>
 </body>
 </html>
